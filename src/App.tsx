@@ -1,5 +1,4 @@
 import "./App.css";
-import React from "react";
 import { MantineProvider, MantineThemeOverride } from "@mantine/core";
 import COLORS from "./constants/color";
 import { useRoutes } from "react-router-dom";
@@ -7,6 +6,7 @@ import routes from "./router";
 import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import "@mantine/notifications/styles.css";
+import "mantine-datatable/styles.layer.css";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 
