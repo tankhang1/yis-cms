@@ -5,11 +5,12 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@assets/*": ["./src/assets/*"],
-      "@constants/*": ["./src/constants/*"],
-      "@pages/*": ["./src/pages/*"]
+      "assets/*": ["./src/assets/*"],
+      "constants/*": ["./src/constants/*"],
+      "pages/*": ["./src/pages/*"]
     }
-  }
+  },
 }

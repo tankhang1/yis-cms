@@ -2,6 +2,13 @@ import "./App.css";
 import React from "react";
 import { MantineProvider, MantineThemeOverride } from "@mantine/core";
 import COLORS from "./constants/color";
+import { useRoutes } from "react-router-dom";
+import routes from "./router";
+import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
+import "@mantine/notifications/styles.css";
+import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 
 // Define your custom theme type
 const customTheme: MantineThemeOverride = {
@@ -26,6 +33,8 @@ const customTheme: MantineThemeOverride = {
 };
 
 function App() {
+  const appRoutes = useRoutes(routes);
+
   return (
     <MantineProvider
       theme={customTheme}
@@ -33,7 +42,8 @@ function App() {
       withGlobalClasses
       withStaticClasses
     >
-      {/* Your app content here */}
+      <ModalsProvider>{appRoutes}</ModalsProvider>
+      <Notifications />
     </MantineProvider>
   );
 }
