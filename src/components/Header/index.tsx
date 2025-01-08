@@ -7,7 +7,6 @@ import {
   Menu,
   Text,
   Tooltip,
-  useMantineTheme,
 } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import LOGO from "../../assets/logo-yis.png";
@@ -26,7 +25,6 @@ const MapLanguageIcon = new Map([
   ],
 ]);
 const Header = () => {
-  const theme = useMantineTheme();
   const onLogout = async () => {};
   return (
     <AppShell.Header
@@ -34,7 +32,11 @@ const Header = () => {
       style={{
         backdropFilter: "saturate(180%) blur(15px)",
         backgroundColor: "rgba(255,255,255,0.9)",
+        borderRadius: "6px",
       }}
+      ml={280}
+      mr={20}
+      mt={10}
     >
       <Group wrap="nowrap" justify="space-between" w={"100%"}>
         <Flex align="center" h="100%">
@@ -47,9 +49,6 @@ const Header = () => {
 
           <Group gap="1rem">
             <Image src={LOGO} w={100} h={25} />
-            <Text size="xl" fw={500} ff={theme.other.altSansSerif}>
-              Yis CMS
-            </Text>
           </Group>
         </Flex>
 

@@ -9,6 +9,8 @@ import "@mantine/notifications/styles.css";
 import "mantine-datatable/styles.layer.css";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 // Define your custom theme type
 const customTheme: MantineThemeOverride = {
@@ -42,7 +44,9 @@ function App() {
       withGlobalClasses
       withStaticClasses
     >
-      <ModalsProvider>{appRoutes}</ModalsProvider>
+      <ModalsProvider>
+        <Provider store={store}>{appRoutes}</Provider>
+      </ModalsProvider>
       <Notifications />
     </MantineProvider>
   );

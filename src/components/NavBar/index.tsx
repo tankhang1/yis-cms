@@ -22,19 +22,7 @@ const NavBar = () => {
 
   const location = useLocation();
   return (
-    <AppShell.Navbar w={matches ? "auto" : 275} py={"lg"} hidden={false}>
-      <Box
-        component={Link}
-        to="/login"
-        style={{
-          transition: "filter 0.5s, transform 0.2s",
-          cursor: "pointer",
-          "&:hover": { filter: "brightness(1.5)" },
-          "&:active": { transform: "scale(0.95)" },
-        }}
-      >
-        {/* <Image src={WALA_LOGO} w={100} mx={"auto"} /> */}
-      </Box>
+    <AppShell.Navbar w={matches ? "auto" : 260} py={"lg"} hidden={false}>
       <AppShellSection
         grow
         component={ScrollArea}
@@ -75,7 +63,7 @@ const NavBar = () => {
                 </HoverCard.Target>
                 <HoverCard.Dropdown p="md" bg={theme.white}>
                   <Stack gap="xs">
-                    <Text c="dimmed" size="sm">
+                    <Text c="dimmed" fz={15} lh={22}>
                       {navElement.label}
                     </Text>
                     <Box>
@@ -111,6 +99,7 @@ const NavBar = () => {
                 key={navElement.label}
                 style={{ borderRadius: theme.radius.sm }}
                 label={navElement.label}
+                fz={15}
                 component={Link}
                 to={navElement.link || ""}
                 leftSection={

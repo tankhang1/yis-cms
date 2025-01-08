@@ -22,16 +22,18 @@ const MainPage = () => {
   return (
     <AppShell
       styles={appShellStyles}
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: "sm" }}
+      navbar={{ width: 260, breakpoint: "sm" }}
       padding="md"
     >
-      <Header />
       <NavBar />
-
-      <ScrollArea type="auto">
-        <Box pl={matches ? 80 : 290} pr={20} pt={80} h={"100vh"} w={"100vw"}>
-          <Outlet />
+      <ScrollArea scrollbars="y" bg={"#F8F7FA"}>
+        <Box pl={matches ? 80 : 280} pr={10} pt={100} h={"100vh"} w={"100vw"}>
+          <ScrollArea type="auto" scrollbars="y">
+            <Header />
+            <Box w={"99%"}>
+              <Outlet />
+            </Box>
+          </ScrollArea>
         </Box>
       </ScrollArea>
     </AppShell>

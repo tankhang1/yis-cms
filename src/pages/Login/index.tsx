@@ -15,16 +15,32 @@ import BottomShape from "../../assets/bottom-shape.svg";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../constants/navLinks";
-type TLoginForm = {
-  email: string;
-  password: string;
-};
+import { useLoginMutation } from "../../redux/api/auth/auth.api";
+import { TAuthREQ } from "../../redux/api/auth/auth.request";
+import { updateInfo, updateToken } from "../../redux/slices/appSlices";
+import { useDispatch } from "react-redux";
+import NotificationHelper from "../../helpers/notification.helper";
+
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<TLoginForm>();
-  const onSubmit: SubmitHandler<TLoginForm> = (data) => {
-    console.log(data);
-    navigate(NAV_LINK.DASHBOARD);
+  const dispatch = useDispatch();
+  const [login, { isLoading: isLoadingLogin }] = useLoginMutation();
+
+  const { register, handleSubmit } = useForm<TAuthREQ>();
+  const onSubmit: SubmitHandler<TAuthREQ> = async (data) => {
+    await login(data)
+      .unwrap()
+      .then((value) => {
+        dispatch(updateToken(value.token));
+        dispatch(updateInfo(value.username));
+        localStorage.setItem("token", value.token);
+        localStorage.setItem("roles", value.roles);
+        NotificationHelper.showSuccess("Thông báo", "Đăng nhập thành công");
+        navigate(NAV_LINK.DASHBOARD);
+      })
+      .catch(() => {
+        NotificationHelper.showError("Thông báo", "Đăng nhập thất bại");
+      });
   };
   return (
     <Center w={"100vw"} h={"100vh"} bg={"#F8F7FA"}>
@@ -32,7 +48,7 @@ const LoginPage = () => {
         <Image
           src={TopShape}
           pos={"absolute"}
-          style={{ zIndex: 0 }}
+          style={{ zIndex: 1 }}
           w={237}
           h={237}
           top={-100}
@@ -41,7 +57,7 @@ const LoginPage = () => {
         <Image
           src={BottomShape}
           pos={"absolute"}
-          style={{ zIndex: 0 }}
+          style={{ zIndex: 1 }}
           w={237}
           h={237}
           right={-100}
@@ -53,8 +69,7 @@ const LoginPage = () => {
           maw={460}
           p={48}
           shadow="sm"
-          pos={"static"}
-          style={{ zIndex: 999 }}
+          style={{ zIndex: 999, position: "relative" }}
         >
           <Stack gap={24}>
             <Center>
@@ -62,7 +77,7 @@ const LoginPage = () => {
             </Center>
             <Stack gap={0}>
               <Text fw={"bold"} fz={24}>
-                Chào mừng đến với Yis CMSS! 👋🏻
+                Chào mừng đến với Yis CMS! 👋🏻
               </Text>
               <Text fw={"normal"} fz={15}>
                 Vui lòng nhập tài khoản và mật khẩu để truy cập vào hệ thống{" "}
@@ -72,7 +87,7 @@ const LoginPage = () => {
               <Input
                 fz={13}
                 placeholder="Tài khoản"
-                {...register("email", { required: true })}
+                {...register("username", { required: true })}
               />
             </Input.Wrapper>
             <Input.Wrapper label="Mật khẩu" fz={13}>
@@ -82,7 +97,9 @@ const LoginPage = () => {
                 {...register("password", { required: true })}
               />
             </Input.Wrapper>
-            <Button onClick={handleSubmit(onSubmit)}>Đăng nhập</Button>
+            <Button onClick={handleSubmit(onSubmit)} loading={isLoadingLogin}>
+              Đăng nhập
+            </Button>
           </Stack>
         </Paper>
       </Box>
