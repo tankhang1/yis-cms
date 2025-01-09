@@ -100,7 +100,7 @@ const HistoryExportExcelPage = () => {
           console.log(value);
           setQuery({
             ...query,
-            nu: value.curPage,
+            nu: value.curPage - 1,
             sz: Number(value.pageSize),
           });
         }}
