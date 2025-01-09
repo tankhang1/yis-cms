@@ -30,7 +30,19 @@ const persistedReducer = persistReducer(persistConfig, rootReducers);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these redux-persist actions
+        ignoredActions: [
+          "persist/PERSIST",
+          "persist/REHYDRATE",
+          "persist/REGISTER",
+          "persist/FLUSH",
+          "persist/PAUSE",
+          "persist/PURGE",
+        ],
+      },
+    })
       .concat(authApi.middleware)
       .concat(iqrApi.middleware)
       .concat(brandnameApi.middleware)
