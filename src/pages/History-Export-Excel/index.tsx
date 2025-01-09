@@ -70,7 +70,12 @@ const HistoryExportExcelPage = () => {
             render: (record) => {
               if (record.status === 1)
                 return (
-                  <ActionIcon variant="outline">
+                  <ActionIcon
+                    variant="outline"
+                    onClick={() => {
+                      window.open(record.file_url, "_blank");
+                    }}
+                  >
                     <IconDownload size={"1.125rem"} />
                   </ActionIcon>
                 );
