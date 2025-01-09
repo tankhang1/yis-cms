@@ -2,22 +2,26 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type TApp = {
   token: string;
   username: string;
+  roles: string;
 };
 const initalValues: TApp = {
   token: "",
   username: "",
+  roles: "",
 };
 const appSlice = createSlice({
   name: "appSlice",
   initialState: initalValues,
   reducers: {
-    updateToken: (state, action: PayloadAction<string>) => {
-      state.token = action.payload;
+    updateAppInfo: (state, action: PayloadAction<TApp>) => {
+      state.token = action.payload.token;
+      state.username = action.payload.username;
+      state.roles = action.payload.roles;
     },
-    updateInfo: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
+    resetAppInfo: () => {
+      return initalValues;
     },
   },
 });
-export const { updateToken, updateInfo } = appSlice.actions;
+export const { updateAppInfo, resetAppInfo } = appSlice.actions;
 export default appSlice.reducer;

@@ -20,20 +20,41 @@ const MainPage = () => {
   );
 
   return (
+    // <AppShell
+    //   styles={appShellStyles}
+    //   navbar={{ width: 260, breakpoint: "sm" }}
+    //   padding="md"
+    // >
+    //   <NavBar />
+    //   <ScrollArea scrollbars="y" bg={"#F8F7FA"}>
+    //     <Box pl={matches ? 80 : 280} pr={10} pt={100} h={"100vh"} w={"100vw"}>
+    //       <ScrollArea type="auto" scrollbars="y">
+    //         <Header />
+    //         <Box w={"99%"}>
+    //           <Outlet />
+    //         </Box>
+    //       </ScrollArea>
+    //     </Box>
+    //   </ScrollArea>
+    // </AppShell>
     <AppShell
       styles={appShellStyles}
       navbar={{ width: 260, breakpoint: "sm" }}
       padding="md"
     >
       <NavBar />
-      <ScrollArea scrollbars="y" bg={"#F8F7FA"}>
-        <Box pl={matches ? 80 : 280} pr={10} pt={100} h={"100vh"} w={"100vw"}>
-          <ScrollArea type="auto" scrollbars="y">
-            <Header />
-            <Box w={"99%"}>
-              <Outlet />
-            </Box>
-          </ScrollArea>
+
+      <ScrollArea type="auto" bg={"#F8F7FA"}>
+        <Box
+          pl={matches ? 80 : 280}
+          pr={20}
+          pt={100}
+          pb={100}
+          h={"100vh"}
+          w={"100vw"}
+        >
+          <Header />
+          <Outlet />
         </Box>
       </ScrollArea>
     </AppShell>

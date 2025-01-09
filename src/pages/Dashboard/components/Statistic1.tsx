@@ -30,7 +30,15 @@ const Statistic1 = ({ data }: Props) => {
     };
   }, [data]);
   return (
-    <Paper radius={8} shadow="md" py={"sm"} px={"xl"} h={365}>
+    <Paper
+      withBorder
+      radius={8}
+      shadow="sm"
+      py={"sm"}
+      px={"xl"}
+      h={365}
+      w={"100%"}
+    >
       <Text fz={18} fw={"bold"}>
         Iqr (Tổng cộng: {mapValue?.total?.toLocaleString("vi")} mã)
       </Text>

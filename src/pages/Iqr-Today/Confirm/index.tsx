@@ -1,24 +1,25 @@
-import { Badge, Grid, Group, Stack, Text } from "@mantine/core";
-import { useCallback, useMemo, useState } from "react";
-import { useGetDashboardStatisticQuery } from "../../redux/api/dashboard/dashboard.api";
-import { TDashboardRES } from "../../redux/api/dashboard/dashboard.response";
-import Statistic1 from "./components/Statistic1";
-import Statistic2 from "./components/Statistic2";
-import Topup from "../../assets/topup.png";
-import Driver from "../../assets/driver.png";
-import Speaker from "../../assets/speaker.png";
-import Fridge from "../../assets/fridge.png";
-import AwardItem from "./components/AwardItem";
-import AppTable from "../../components/AppTable";
-import { TIqrRangeTimeREQ } from "../../redux/api/iqr/iqr.request";
+import { ActionIcon, Badge, Group, Input, Stack, Text } from "@mantine/core";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import NAV_LINK from "../../../constants/navLinks";
+import { TIqrRangeTimeREQ } from "../../../redux/api/iqr/iqr.request";
 import {
   useGetProvincesQuery,
   useIqrCounterTodayQuery,
   useIqrTodayQuery,
-} from "../../redux/api/iqr/iqr.api";
-type MappedData = {
-  [key: string]: TDashboardRES[];
-};
+} from "../../../redux/api/iqr/iqr.api";
+// import { useConfirmIqrMutation, useRejectIqrMutation, useUpdateIqrMutation } from "../../../redux/api/auth/auth.api";
+import AppTable from "../../../components/AppTable";
+import {
+  IconCircleCheckFilled,
+  IconEdit,
+  IconSearch,
+  IconTriangleFilled,
+  IconX,
+} from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { resetAppInfo } from "../../../redux/slices/appSlices";
+import { RootState } from "../../../redux/store";
 const MapLabel = new Map([
   ["xemay", "Xe máy Air Blade 125cc"],
   ["topup", "Nạp tiền 10.000VND"],
@@ -26,12 +27,16 @@ const MapLabel = new Map([
   ["loaJBL", "Loa JBL Partybox110"],
   ["", "Không trúng thưởng"],
 ]);
-const DashboardPage = () => {
-  const { data: statistic } = useGetDashboardStatisticQuery({});
+const IqrConfirmTodayPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.app);
+
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
     sz: 15,
     gateway: 2,
+    s: 2,
     k: "",
   });
   const { data: iqr, isFetching: isFetchingIqr } = useIqrTodayQuery(query, {
@@ -42,12 +47,11 @@ const DashboardPage = () => {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-  const { data: provinces } = useGetProvincesQuery();
 
-  const extractCategory = (award: string): string => {
-    const parts = award.split("_");
-    return parts?.length > 1 ? parts?.slice(0, -1).join("_") : award;
-  };
+  //   const [rejectIqr, { isLoading: isLoadingReject }] = useRejectIqrMutation();
+  //   const [confirmIqr, { isLoading: isLoadingConfirm }] = useConfirmIqrMutation();
+  //   const [updateIqr, { isLoading: isLoadingUpdate }] = useUpdateIqrMutation();
+  const { data: provinces } = useGetProvincesQuery();
   const mapProvince = useCallback(
     (code: string) => {
       if (!code) return "";
@@ -55,68 +59,39 @@ const DashboardPage = () => {
     },
     [provinces]
   );
-  const mapByCategory = useCallback((data: TDashboardRES[]): MappedData => {
-    return data.reduce<MappedData>((acc, item) => {
-      const category = extractCategory(item.award);
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(item);
-      return acc;
-    }, {});
-  }, []);
-
-  const mapValue = useMemo(
-    () => mapByCategory(statistic || []),
-    [statistic, mapByCategory]
-  );
+  useEffect(() => {
+    if (!token) {
+      navigate(NAV_LINK.LOGIN);
+      dispatch(resetAppInfo());
+    }
+  }, [navigate, token, dispatch]);
   return (
     <Stack flex={1}>
-      <Text fz={"h3"} fw={"bold"} c={"rgb(64, 174, 163)"}>
-        THỐNG KÊ
-      </Text>
-      <Grid>
-        <Grid.Col span={4}>
-          <Statistic1 data={mapValue} />
-        </Grid.Col>
-        <Grid.Col span={8}>
-          <Statistic2 data={mapValue} />
-        </Grid.Col>
-      </Grid>
-      <Text fz={"h3"} fw={"bold"} c={"rgb(64, 174, 163)"}>
-        SỐ GIẢI ĐÃ TRÚNG THƯỞNG
-      </Text>
       <Group justify="space-between" wrap="wrap">
-        <AwardItem
-          image={Driver}
-          title="Giải nhất"
-          value={mapValue["xemay"]?.[0]?.total}
-          note={10}
-        />
-        <AwardItem
-          image={Fridge}
-          title="Giải nhì"
-          value={mapValue["tulanh"]?.[0]?.total}
-          imageStyle="tw-h-44"
-          note={15}
-        />
-        <AwardItem
-          image={Speaker}
-          title="Giải ba"
-          value={mapValue["loaJBL"]?.[0]?.total}
-          imageStyle="tw-h-36"
-          note={30}
-        />
-        <AwardItem
-          image={Topup}
-          title="Giải khuyến khích"
-          value={mapValue["Topup"]?.[0]?.total}
-          note={453023}
-        />
+        <Text fz={"h3"} fw={"bold"}>
+          Tìm kiếm thông tin
+        </Text>
+        <Input
+          placeholder="Nhập mã số may mắn và số điện thoại"
+          w={"25%"}
+          value={query.k}
+          leftSection={<IconSearch size={"1rem"} />}
+          rightSectionPointerEvents="all"
+          rightSection={
+            query.k && (
+              <ActionIcon
+                variant="subtle"
+                color="red"
+                size={"1rem"}
+                onClick={() => setQuery({ ...query, k: "" })}
+              >
+                <IconX />
+              </ActionIcon>
+            )
+          }
+          onChange={(e) => setQuery({ ...query, k: e.target.value })}
+        />{" "}
       </Group>
-      <Text fz={"h3"} c={"rgb(64, 174, 163)"} fw={"bolder"}>
-        IQR TRONG NGÀY
-      </Text>
       <AppTable
         columns={[
           {
@@ -133,6 +108,21 @@ const DashboardPage = () => {
             accessor: "status",
             title: "Trạng thái",
             textAlign: "center",
+            render: (record) =>
+              record.status === 2 ? (
+                <ActionIcon color={"blue"}>
+                  <IconCircleCheckFilled size={"1.125rem"} />
+                </ActionIcon>
+              ) : (
+                <ActionIcon color="red">
+                  <IconTriangleFilled size={"1.125rem"} />
+                </ActionIcon>
+              ),
+          },
+          {
+            accessor: "",
+            title: "Duyệt",
+            textAlign: "center",
             width: 150,
             render: (record) => {
               if (record.status === 2)
@@ -148,6 +138,16 @@ const DashboardPage = () => {
           {
             accessor: "product_name",
             title: "Tên sản phẩm",
+          },
+          {
+            accessor: "",
+            title: "Chỉnh sửa",
+            textAlign: "center",
+            render: (record) => (
+              <ActionIcon onClick={() => console.log(record)} variant="outline">
+                <IconEdit size={"1.125rem"} />
+              </ActionIcon>
+            ),
           },
           {
             accessor: "award1",
@@ -187,6 +187,7 @@ const DashboardPage = () => {
           {
             accessor: "note",
             title: "Ghi chú",
+            width: 200,
           },
         ]}
         data={iqr || []}
@@ -205,4 +206,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default IqrConfirmTodayPage;

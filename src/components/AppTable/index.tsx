@@ -41,17 +41,12 @@ function AppTable<T>({
   }, [pageSize]);
 
   const [page, setPage] = useState(1);
-  const [records, setRecords] = useState(data.slice(0, pageSize));
 
   useEffect(() => {
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize;
-
     if (onQueryChange) {
       onQueryChange({ pageSize: pageSize, curPage: page });
-      setRecords(data);
-    } else setRecords(data.slice(from, to));
-  }, [page, pageSize, data]);
+    }
+  }, [page, pageSize]);
 
   useEffect(() => {
     setPage(1);
@@ -61,10 +56,14 @@ function AppTable<T>({
     <DataTable
       columns={columns}
       fetching={isLoading}
-      records={records}
+      records={
+        data?.map((item) => ({
+          ...item,
+          id: Math.random(),
+        })) || []
+      }
       striped
       stripedColor={theme.colors.gray[2]}
-      withTableBorder
       withRowBorders
       withColumnBorders
       shadow="sm"
@@ -76,7 +75,7 @@ function AppTable<T>({
       height={500}
       styles={{
         header: {
-          backgroundColor: theme.colors.gray[1],
+          backgroundColor: "#FFFFFF",
           zIndex: 10,
         },
       }}
@@ -86,7 +85,7 @@ function AppTable<T>({
       paginationActiveBackgroundColor="grape"
       recordsPerPage={pageSize}
       page={page}
-      onPageChange={(p) => setPage(p)}
+      onPageChange={setPage}
       recordsPerPageOptions={PAGE_SIZES}
       onRecordsPerPageChange={setPageSize}
       loadingText={"Đang tải dữ liệu"}

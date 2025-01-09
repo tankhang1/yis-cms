@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../constants/navLinks";
 import { useLoginMutation } from "../../redux/api/auth/auth.api";
 import { TAuthREQ } from "../../redux/api/auth/auth.request";
-import { updateInfo, updateToken } from "../../redux/slices/appSlices";
+import { updateAppInfo } from "../../redux/slices/appSlices";
 import { useDispatch } from "react-redux";
 import NotificationHelper from "../../helpers/notification.helper";
 
@@ -31,10 +31,14 @@ const LoginPage = () => {
     await login(data)
       .unwrap()
       .then((value) => {
-        dispatch(updateToken(value.token));
-        dispatch(updateInfo(value.username));
-        localStorage.setItem("token", value.token);
-        localStorage.setItem("roles", value.roles);
+        dispatch(
+          updateAppInfo({
+            token: value.token,
+            username: value.username,
+            roles: value.roles,
+          })
+        );
+
         NotificationHelper.showSuccess("Thông báo", "Đăng nhập thành công");
         navigate(NAV_LINK.DASHBOARD);
       })

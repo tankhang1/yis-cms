@@ -1,4 +1,4 @@
-export type TIqrTodayREQ = {};
+export type TIqrTodayREQ = void;
 export type TIqrRangeTimeREQ = {
   nu: number;
   sz: number;
@@ -8,7 +8,15 @@ export type TIqrRangeTimeREQ = {
   s: number;
   gateway: number;
 };
-
+export type TIqrRangeDateTimeREQ = {
+  nu: number;
+  sz: number;
+  st: Date;
+  ed: Date;
+  k: string;
+  s: number;
+  gateway: number;
+};
 export type TIqrExportREQ = {
   st: number;
   ed: number;

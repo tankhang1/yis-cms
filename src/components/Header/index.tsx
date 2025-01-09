@@ -10,6 +10,10 @@ import {
 } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import LOGO from "../../assets/logo-yis.png";
+import { useNavigate } from "react-router-dom";
+import NAV_LINK from "../../constants/navLinks";
+import { useDispatch } from "react-redux";
+import { resetAppInfo } from "../../redux/slices/appSlices";
 const MapLanguageIcon = new Map([
   [
     "vi",
@@ -25,7 +29,12 @@ const MapLanguageIcon = new Map([
   ],
 ]);
 const Header = () => {
-  const onLogout = async () => {};
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const onLogout = async () => {
+    navigate(NAV_LINK.LOGIN);
+    dispatch(resetAppInfo());
+  };
   return (
     <AppShell.Header
       p="md"
@@ -40,13 +49,6 @@ const Header = () => {
     >
       <Group wrap="nowrap" justify="space-between" w={"100%"}>
         <Flex align="center" h="100%">
-          {/* <Burger
-              onClick={() => {}}
-              size="sm"
-              color={theme.colors.gray[6]}
-              mr="xl"
-            /> */}
-
           <Group gap="1rem">
             <Image src={LOGO} w={100} h={25} />
           </Group>

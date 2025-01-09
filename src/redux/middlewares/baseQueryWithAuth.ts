@@ -3,8 +3,9 @@ import { BASE_URL_WITH_AUTH } from "../../constants";
 
 const baseQueryWithAuth = fetchBaseQuery({
   baseUrl: BASE_URL_WITH_AUTH,
-  prepareHeaders: (headers) => {
-    const token = localStorage.getItem("token");
+  prepareHeaders: (headers, { getState }) => {
+    //@ts-expect-error no check
+    const token = getState()?.app?.token;
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

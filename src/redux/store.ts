@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authApi } from "./api/auth/auth.api";
 import appReducer from "./slices/appSlices";
 import { iqrApi } from "./api/iqr/iqr.api";
@@ -8,17 +8,27 @@ import { rtkQueryErrorLogger } from "./middlewares/errorMiddleware";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { excelApi } from "./api/excel/excel.api";
 import { dashboardApi } from "./api/dashboard/dashboard.api";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["app"],
+};
+const rootReducers = combineReducers({
+  app: appReducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [iqrApi.reducerPath]: iqrApi.reducer,
+  [topupApi.reducerPath]: topupApi.reducer,
+  [brandnameApi.reducerPath]: brandnameApi.reducer,
+  [excelApi.reducerPath]: excelApi.reducer,
+  [dashboardApi.reducerPath]: dashboardApi.reducer,
+});
+const persistedReducer = persistReducer(persistConfig, rootReducers);
 
 export const store = configureStore({
-  reducer: {
-    app: appReducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [iqrApi.reducerPath]: iqrApi.reducer,
-    [topupApi.reducerPath]: topupApi.reducer,
-    [brandnameApi.reducerPath]: brandnameApi.reducer,
-    [excelApi.reducerPath]: excelApi.reducer,
-    [dashboardApi.reducerPath]: dashboardApi.reducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
@@ -31,6 +41,6 @@ export const store = configureStore({
 });
 
 setupListeners(store.dispatch);
-
+export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

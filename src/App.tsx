@@ -7,10 +7,12 @@ import "@mantine/core/styles.css";
 import "@mantine/core/styles.layer.css";
 import "@mantine/notifications/styles.css";
 import "mantine-datatable/styles.layer.css";
+import "@mantine/dates/styles.css";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { persistor, store } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 // Define your custom theme type
 const customTheme: MantineThemeOverride = {
@@ -45,7 +47,11 @@ function App() {
       withStaticClasses
     >
       <ModalsProvider>
-        <Provider store={store}>{appRoutes}</Provider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            {appRoutes}
+          </PersistGate>
+        </Provider>
       </ModalsProvider>
       <Notifications />
     </MantineProvider>
