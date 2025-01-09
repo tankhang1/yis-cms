@@ -1,8 +1,23 @@
-import { ActionIcon, Badge, Group, Input, Stack, Text } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Drawer,
+  Group,
+  Image,
+  Input,
+  Modal,
+  NativeSelect,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../../constants/navLinks";
-import { TIqrRangeTimeREQ } from "../../../redux/api/iqr/iqr.request";
+import {
+  TIqrRangeTimeREQ,
+  TIqrUpdateREQ,
+} from "../../../redux/api/iqr/iqr.request";
 import {
   useGetProvincesQuery,
   useIqrCounterQuery,
@@ -15,11 +30,20 @@ import {
   IconEdit,
   IconSearch,
   IconTriangleFilled,
+  IconUpload,
   IconX,
+  IconZoomScan,
 } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { resetAppInfo } from "../../../redux/slices/appSlices";
+import { useDisclosure } from "@mantine/hooks";
+import { useUpdateIqrMutation } from "../../../redux/api/auth/auth.api";
+import { useForm } from "react-hook-form";
+import NotificationHelper from "../../../helpers/notification.helper";
+import { uploadBase64Image } from "../../../hooks/uploadFile";
+import { BASE_URL, IMAGE_PLACEHOLDER } from "../../../constants";
+import { TIqrRES } from "../../../redux/api/iqr/iqr.response";
 const MapLabel = new Map([
   ["xemay", "Xe máy Air Blade 125cc"],
   ["topup", "Nạp tiền 10.000VND"],
@@ -30,6 +54,9 @@ const MapLabel = new Map([
 const IqrConfirmPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [openedEditForm, { toggle: toggleEditForm }] = useDisclosure(false);
   const { token } = useSelector((state: RootState) => state.app);
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
@@ -38,6 +65,12 @@ const IqrConfirmPage = () => {
     s: 2,
     k: "",
   });
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<TIqrUpdateREQ>();
+
+  const [previewImage, setPreviewImage] = useState("");
+  const [isLoadingUploadImage, setIsLoadingUploadImage] = useState(false);
+
   const { data: iqr, isFetching: isFetchingIqr } = useIqrRangeDateQuery(query, {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -47,9 +80,7 @@ const IqrConfirmPage = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  //   const [rejectIqr, { isLoading: isLoadingReject }] = useRejectIqrMutation();
-  //   const [confirmIqr, { isLoading: isLoadingConfirm }] = useConfirmIqrMutation();
-  //   const [updateIqr, { isLoading: isLoadingUpdate }] = useUpdateIqrMutation();
+  const [updateIqr, { isLoading: isLoadingUpdate }] = useUpdateIqrMutation();
   const { data: provinces } = useGetProvincesQuery();
   const mapProvince = useCallback(
     (code: string) => {
@@ -58,6 +89,72 @@ const IqrConfirmPage = () => {
     },
     [provinces]
   );
+  const onOpenEditForm = (record: TIqrRES) => {
+    toggleEditForm();
+    setValue("image_confirm", record.image_confirm || "");
+    setValue("name", record.fullname || "");
+    setValue("province_name_agent", record.province_name_agent);
+    setValue("address", record.address);
+    setValue("code", record.code || "");
+    setValue("note", record.note || "");
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          const base64String = reader.result.toString();
+          console.log(base64String); // Log the Base64 string
+          setValue("image_confirm", base64String); // Update the form value with the Base64 string
+        }
+      };
+      reader.readAsDataURL(file); // Convert file to Base64
+    }
+  };
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+  const onUpdateIqr = async (values: TIqrUpdateREQ) => {
+    if (values.image_confirm.includes("https://")) {
+      await updateIqr(values)
+        .unwrap()
+        .then((value) => {
+          if (value.status === 0) {
+            NotificationHelper.showSuccess("Thông báo", "Cập nhật thành công");
+          } else NotificationHelper.showError("Thông báo", "Cập nhật thất bại");
+          toggleEditForm();
+          reset();
+        })
+        .catch(() => {
+          NotificationHelper.showError("Thông báo", "Cập nhật thất bại");
+          toggleEditForm();
+          reset();
+        });
+    } else {
+      setIsLoadingUploadImage(true);
+      await uploadBase64Image(values.image_confirm, values.code);
+      await updateIqr({
+        ...values,
+        image_confirm: `${BASE_URL}/${values.code}.jpg`,
+      })
+        .unwrap()
+        .then((value) => {
+          if (value.status === 0) {
+            NotificationHelper.showSuccess("Thông báo", "Cập nhật thành công");
+          } else NotificationHelper.showError("Thông báo", "Cập nhật thất bại");
+          toggleEditForm();
+          setIsLoadingUploadImage(false);
+          reset();
+        })
+        .catch(() => {
+          NotificationHelper.showError("Thông báo", "Cập nhật thất bại");
+          toggleEditForm();
+          setIsLoadingUploadImage(false);
+          reset();
+        });
+    }
+  };
   useEffect(() => {
     if (!token) {
       navigate(NAV_LINK.LOGIN);
@@ -143,7 +240,10 @@ const IqrConfirmPage = () => {
             title: "Chỉnh sửa",
             textAlign: "center",
             render: (record) => (
-              <ActionIcon onClick={() => console.log(record)} variant="outline">
+              <ActionIcon
+                onClick={() => onOpenEditForm(record)}
+                variant="outline"
+              >
                 <IconEdit size={"1.125rem"} />
               </ActionIcon>
             ),
@@ -186,6 +286,19 @@ const IqrConfirmPage = () => {
           {
             accessor: "note",
             title: "Ghi chú",
+            width: 200,
+          },
+          {
+            accessor: "time_active",
+            title: "Thời gian kích hoạt",
+          },
+          {
+            accessor: "time_turn",
+            title: "Thời gian sử dụng",
+          },
+          {
+            accessor: "time_finish",
+            title: "Thời gian xử lý",
           },
         ]}
         data={iqr || []}
@@ -194,12 +307,112 @@ const IqrConfirmPage = () => {
           console.log(value);
           setQuery({
             ...query,
-            nu: value.curPage,
+            nu: value.curPage - 1,
             sz: Number(value.pageSize),
           });
         }}
         totalElements={iqrCounter}
       />
+      <Modal
+        opened={openedEditForm}
+        onClose={toggleEditForm}
+        title={
+          <Text fz={"h4"} fw={"bold"}>
+            Thông tin IQR
+          </Text>
+        }
+        size={"lg"}
+        centered
+      >
+        <Group gap={10} align="flex-start">
+          <Stack pos={"relative"}>
+            <Image
+              src={watch().image_confirm || IMAGE_PLACEHOLDER}
+              w={300}
+              mah={400}
+              fit="cover"
+              radius={"md"}
+              loading="lazy"
+            />
+            <Group pos={"absolute"} top={10} right={10} gap={"xs"}>
+              <ActionIcon
+                color={"blue"}
+                onClick={() =>
+                  setPreviewImage(watch().image_confirm || IMAGE_PLACEHOLDER)
+                }
+              >
+                <IconZoomScan size={"1.125rem"} color="white" />
+              </ActionIcon>
+
+              <ActionIcon color={"blue"} onClick={handleImageClick}>
+                <input
+                  ref={fileInputRef}
+                  placeholder="Hình ảnh giấy chứng nhận"
+                  type="file"
+                  onChange={handleFileChange}
+                  disabled={
+                    localStorage.getItem("roles") === "ROLE_AGENT"
+                      ? true
+                      : false
+                  }
+                  style={{ display: "none" }}
+                />
+                <IconUpload size={"1.125rem"} color="white" />
+              </ActionIcon>
+            </Group>
+          </Stack>
+          <Stack flex={1}>
+            <Stack gap={5}>
+              <Input.Wrapper label="Tên khách hàng" fz={13}>
+                <Input
+                  fz={13}
+                  placeholder="Tên khách hàng"
+                  disabled
+                  {...register("name")}
+                />
+              </Input.Wrapper>
+              <NativeSelect
+                data={provinces?.map((province) => ({
+                  value: province.code,
+                  label: province.name,
+                }))}
+                label="Tỉnh thành xác thực"
+                {...register("province_name_agent")}
+              />
+              <Input.Wrapper label="Địa chỉ" fz={13}>
+                <Input fz={13} placeholder="Địa chỉ" {...register("address")} />
+              </Input.Wrapper>
+              <Input.Wrapper label="Ghi chú" fz={13}>
+                <Input fz={13} placeholder="Ghi chú" {...register("note")} />
+              </Input.Wrapper>
+            </Stack>
+
+            <Group align="center" justify="center">
+              <Button
+                loading={isLoadingUpdate || isLoadingUploadImage}
+                onClick={handleSubmit(onUpdateIqr)}
+              >
+                Cập nhật
+              </Button>
+              <Button variant="outline" onClick={toggleEditForm}>
+                Huỷ
+              </Button>
+            </Group>
+          </Stack>
+        </Group>
+      </Modal>
+      <Drawer
+        offset={8}
+        radius="md"
+        opened={previewImage !== ""}
+        onClose={() => setPreviewImage("")}
+        withCloseButton
+        size={"100%"}
+      >
+        <Stack justify="center" align="center" flex={1}>
+          <Image src={previewImage} maw={"50%"} mah={"85dvh"} fit="cover" />
+        </Stack>
+      </Drawer>
     </Stack>
   );
 };

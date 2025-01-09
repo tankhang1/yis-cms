@@ -1,12 +1,4 @@
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Group,
-  Image,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Badge, Button, Group, Image, Stack, Text } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../../constants/navLinks";
@@ -18,12 +10,7 @@ import {
 } from "../../../redux/api/iqr/iqr.api";
 // import { useConfirmIqrMutation, useRejectIqrMutation, useUpdateIqrMutation } from "../../../redux/api/auth/auth.api";
 import AppTable from "../../../components/AppTable";
-import {
-  IconCircleCheckFilled,
-  IconEdit,
-  IconFileExcel,
-  IconTriangleFilled,
-} from "@tabler/icons-react";
+import { IconFileExcel } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DateInput } from "@mantine/dates";
 import { useDispatch, useSelector } from "react-redux";
@@ -144,21 +131,7 @@ const ReportIqrMissingParamsPage = () => {
             title: "Mã iQr",
             textAlign: "center",
           },
-          {
-            accessor: "status",
-            title: "Trạng thái",
-            textAlign: "center",
-            render: (record) =>
-              record.status === 2 ? (
-                <ActionIcon color={"blue"}>
-                  <IconCircleCheckFilled size={"1.125rem"} />
-                </ActionIcon>
-              ) : (
-                <ActionIcon color="red">
-                  <IconTriangleFilled size={"1.125rem"} />
-                </ActionIcon>
-              ),
-          },
+
           {
             accessor: "",
             title: "Duyệt",
@@ -179,16 +152,7 @@ const ReportIqrMissingParamsPage = () => {
             accessor: "product_name",
             title: "Tên sản phẩm",
           },
-          {
-            accessor: "",
-            title: "Chỉnh sửa",
-            textAlign: "center",
-            render: (record) => (
-              <ActionIcon onClick={() => console.log(record)} variant="outline">
-                <IconEdit size={"1.125rem"} />
-              </ActionIcon>
-            ),
-          },
+
           {
             accessor: "award1",
             title: "Cơ hội 1",
