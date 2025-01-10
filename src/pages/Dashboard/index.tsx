@@ -173,20 +173,18 @@ const DashboardPage = () => {
             render: (record) =>
               record?.province && mapProvince(record.province),
           },
+
           {
-            accessor: "province_name_agent",
-            title: "Tỉnh xác thực",
-            render: (record) =>
-              record?.province_name_agent &&
-              mapProvince(record.province_name_agent),
+            accessor: "time_active",
+            title: "Thời gian kích hoạt",
           },
           {
-            accessor: "address",
-            title: "Địa chỉ",
+            accessor: "time_turn",
+            title: "Thời gian sử dụng",
           },
           {
-            accessor: "note",
-            title: "Ghi chú",
+            accessor: "time_finish",
+            title: "Thời gian xử lý",
           },
         ]}
         data={iqr || []}
