@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 import NAV_LINK from "./constants/navLinks";
 import LoginPage from "./pages/Login";
 import { ProtectedPage } from "./pages/ProtectedPage";
@@ -23,6 +23,10 @@ const publicRoute: RouteObject[] = [
     path: NAV_LINK.LOGIN,
     element: <LoginPage />,
   },
+  {
+    path: "/",
+    element: <Navigate to={NAV_LINK.LOGIN} />,
+  },
 ];
 
 const privateRoute: RouteObject[] = [
@@ -30,11 +34,11 @@ const privateRoute: RouteObject[] = [
     element: <ProtectedPage />,
     children: [
       {
-        path: "",
         element: <MainPage />,
         children: [
           //Dashboard
           {
+            index: true,
             path: NAV_LINK.DASHBOARD,
             element: <DashboardPage />,
           },
