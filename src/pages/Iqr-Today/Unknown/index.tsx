@@ -53,7 +53,7 @@ const IqrUnknownTodayPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.app);
-  const { register, reset, getValues } = useForm<TIqrUpdateREQ>();
+  const { register, reset, getValues, watch } = useForm<TIqrUpdateREQ>();
 
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
@@ -332,7 +332,11 @@ const IqrUnknownTodayPage = () => {
               </Text>
 
               <Input.Wrapper label="Ghi chú">
-                <Input placeholder="Ghi chú" {...register("note")} />
+                <Input
+                  placeholder="Ghi chú"
+                  {...register("note")}
+                  value={watch().note}
+                />
               </Input.Wrapper>
             </Stack>
 

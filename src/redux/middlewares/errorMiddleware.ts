@@ -1,16 +1,18 @@
-// import { Alert } from 'react-native';
 import type { Middleware } from "@reduxjs/toolkit";
 import { isRejectedWithValue } from "@reduxjs/toolkit";
-import { redirect } from "react-router-dom";
 import NAV_LINK from "../../constants/navLinks";
+import { store } from "../store";
+import { resetAppInfo } from "../slices/appSlices";
 
-export const rtkQueryErrorLogger: Middleware =
-  () => (next) => async (action) => {
-    if (isRejectedWithValue(action)) {
-      if (action?.payload?.status === 403) {
-        redirect(NAV_LINK.LOGIN);
-      }
+export const rtkQueryErrorLogger: Middleware = () => (next) => (action) => {
+  if (isRejectedWithValue(action)) {
+    console.log("payload", action?.payload);
+    //@ts-expect-error no check
+    if (action?.payload?.status === 403) {
+      store.dispatch(resetAppInfo());
+      window.location.href = NAV_LINK.LOGIN;
     }
+  }
 
-    return next(action);
-  };
+  return next(action);
+};

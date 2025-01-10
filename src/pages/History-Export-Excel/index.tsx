@@ -1,9 +1,9 @@
-import { ActionIcon, Badge, Button, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Badge, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppTable from "../../components/AppTable";
 
-import { IconDownload, IconFileExcel } from "@tabler/icons-react";
+import { IconDownload } from "@tabler/icons-react";
 import { useGetListHistoryFileQuery } from "../../redux/api/excel/excel.api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -38,14 +38,6 @@ const HistoryExportExcelPage = () => {
   }, [navigate, token, dispatch]);
   return (
     <Stack flex={1}>
-      <Group justify="space-between" wrap="wrap">
-        <Text fz={"h3"} fw={"bold"}>
-          Tìm kiếm thông tin
-        </Text>
-        <Button leftSection={<IconFileExcel size={"1.125rem"} />}>
-          Xuất File
-        </Button>
-      </Group>
       <AppTable
         columns={[
           {

@@ -287,14 +287,17 @@ const IqrSearchPage = () => {
             accessor: "",
             title: "Chỉnh sửa",
             textAlign: "center",
-            render: (record) => (
-              <ActionIcon
-                onClick={() => onOpenEditForm(record)}
-                variant="outline"
-              >
-                <IconEdit size={"1.125rem"} />
-              </ActionIcon>
-            ),
+            render: (record) =>
+              (record.status === 2 ||
+                record.status === 3 ||
+                record.status === 0) && (
+                <ActionIcon
+                  onClick={() => onOpenEditForm(record)}
+                  variant="outline"
+                >
+                  <IconEdit size={"1.125rem"} />
+                </ActionIcon>
+              ),
           },
           {
             accessor: "award1",
@@ -507,7 +510,12 @@ const IqrSearchPage = () => {
                   "Chúc bạn may mắn lần sau"}
               </Text>
               <Input.Wrapper label="Ghi chú" fz={13}>
-                <Input fz={13} placeholder="Ghi chú" {...register("note")} />
+                <Input
+                  fz={13}
+                  placeholder="Ghi chú"
+                  {...register("note")}
+                  value={watch().note}
+                />
               </Input.Wrapper>
             </Stack>
 

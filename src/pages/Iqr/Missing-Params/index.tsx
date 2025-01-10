@@ -508,7 +508,12 @@ const IqrMissingParamsPage = () => {
                   "Chúc bạn may mắn lần sau"}
               </Text>
               <Input.Wrapper label="Ghi chú" fz={13}>
-                <Input fz={13} placeholder="Ghi chú" {...register("note")} />
+                <Input
+                  fz={13}
+                  placeholder="Ghi chú"
+                  {...register("note")}
+                  value={watch().note}
+                />
               </Input.Wrapper>
             </Stack>
 

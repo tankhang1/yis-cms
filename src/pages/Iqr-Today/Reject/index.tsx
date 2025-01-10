@@ -40,8 +40,8 @@ import { RootState } from "../../../redux/store";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import {
-  useConfirmIqrMutation,
-  useRejectIqrMutation,
+  // useConfirmIqrMutation,
+  // useRejectIqrMutation,
   useUpdateIqrMutation,
 } from "../../../redux/api/auth/auth.api";
 import { TIqrRES } from "../../../redux/api/iqr/iqr.response";
@@ -64,7 +64,7 @@ const IqrRejectTodayPage = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [iqrDetail, setIqrDetail] = useState<TIqrRES>();
   const { token } = useSelector((state: RootState) => state.app);
-  const { register, handleSubmit, reset, watch, setValue, getValues } =
+  const { register, handleSubmit, reset, watch, setValue } =
     useForm<TIqrUpdateREQ>();
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
@@ -82,8 +82,8 @@ const IqrRejectTodayPage = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const [rejectIqr, { isLoading: isLoadingReject }] = useRejectIqrMutation();
-  const [confirmIqr, { isLoading: isLoadingConfirm }] = useConfirmIqrMutation();
+  // const [rejectIqr, { isLoading: isLoadingReject }] = useRejectIqrMutation();
+  // const [confirmIqr, { isLoading: isLoadingConfirm }] = useConfirmIqrMutation();
   const [updateIqr, { isLoading: isLoadingUpdate }] = useUpdateIqrMutation();
   const [isLoadingUploadImage, setIsLoadingUploadImage] = useState(false);
 
@@ -121,40 +121,40 @@ const IqrRejectTodayPage = () => {
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
-  const onReject = async (code: string) => {
-    const { note } = getValues();
-    await rejectIqr({ code, note })
-      .unwrap()
-      .then((value) => {
-        if (value.status === 0)
-          NotificationHelper.showSuccess("Thông báo", "Từ chối thành công");
-        else NotificationHelper.showError("Thông báo", "Từ chối thất bại");
-        setIqrDetail(undefined);
-        reset();
-      })
-      .catch(() => {
-        NotificationHelper.showError("Thông báo", "Từ chối thất bại");
-        setIqrDetail(undefined);
-        reset();
-      });
-  };
-  const onConfirm = async (code: string) => {
-    const { note } = getValues();
-    await confirmIqr({ code, note })
-      .unwrap()
-      .then((value) => {
-        if (value.status === 0) {
-          NotificationHelper.showSuccess("Thông báo", "Duyệt thành công");
-        } else NotificationHelper.showError("Thông báo", "Duyệt thất bại");
-        setIqrDetail(undefined);
-        reset();
-      })
-      .catch(() => {
-        NotificationHelper.showError("Thông báo", "Duyệt thất bại");
-        setIqrDetail(undefined);
-        reset();
-      });
-  };
+  // const onReject = async (code: string) => {
+  //   const { note } = getValues();
+  //   await rejectIqr({ code, note })
+  //     .unwrap()
+  //     .then((value) => {
+  //       if (value.status === 0)
+  //         NotificationHelper.showSuccess("Thông báo", "Từ chối thành công");
+  //       else NotificationHelper.showError("Thông báo", "Từ chối thất bại");
+  //       setIqrDetail(undefined);
+  //       reset();
+  //     })
+  //     .catch(() => {
+  //       NotificationHelper.showError("Thông báo", "Từ chối thất bại");
+  //       setIqrDetail(undefined);
+  //       reset();
+  //     });
+  // };
+  // const onConfirm = async (code: string) => {
+  //   const { note } = getValues();
+  //   await confirmIqr({ code, note })
+  //     .unwrap()
+  //     .then((value) => {
+  //       if (value.status === 0) {
+  //         NotificationHelper.showSuccess("Thông báo", "Duyệt thành công");
+  //       } else NotificationHelper.showError("Thông báo", "Duyệt thất bại");
+  //       setIqrDetail(undefined);
+  //       reset();
+  //     })
+  //     .catch(() => {
+  //       NotificationHelper.showError("Thông báo", "Duyệt thất bại");
+  //       setIqrDetail(undefined);
+  //       reset();
+  //     });
+  // };
   const onUpdateIqr = async (values: TIqrUpdateREQ) => {
     if (values.image_confirm.includes("https://")) {
       await updateIqr(values)
@@ -506,26 +506,10 @@ const IqrRejectTodayPage = () => {
                 {MapLabel.get(iqrDetail?.award1 || iqrDetail?.award2 || "") ||
                   "Chúc bạn may mắn lần sau"}
               </Text>
-              <Input.Wrapper label="Ghi chú" fz={13}>
-                <Input fz={13} placeholder="Ghi chú" {...register("note")} />
-              </Input.Wrapper>
+              <Text c={"black"} fz={"h5"}>
+                Ghi chú: {iqrDetail?.note || ""}
+              </Text>
             </Stack>
-
-            <Group align="center" justify="center">
-              <Button
-                loading={isLoadingConfirm}
-                onClick={() => onConfirm(iqrDetail?.code || "")}
-              >
-                Duyệt
-              </Button>
-              <Button
-                color={"red"}
-                loading={isLoadingReject}
-                onClick={() => onReject(iqrDetail?.code || "")}
-              >
-                Từ chối
-              </Button>
-            </Group>
           </Stack>
         </Group>
       </Modal>

@@ -53,6 +53,7 @@ function AppTable<T>({
   }, [isResetPage]);
 
   return (
+    //@ts-expect-error no check
     <DataTable
       columns={columns}
       fetching={isLoading}

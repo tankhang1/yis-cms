@@ -35,6 +35,11 @@ const customTheme: MantineThemeOverride = {
     primaryShades: COLORS.primary.o, // Use the `o` object directly from COLORS
   },
 };
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+}
 
 function App() {
   const appRoutes = useRoutes(routes);

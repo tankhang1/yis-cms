@@ -6,6 +6,7 @@ const baseQueryWithAuth = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     //@ts-expect-error no check
     const token = getState()?.app?.token;
+    console.log("token", token);
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
