@@ -107,10 +107,6 @@ export const listRoleReportElements = [
         link: NAV_LINK.REPORT.IQR,
       },
       {
-        label: "Iqr thiếu thông tin",
-        link: NAV_LINK.REPORT.IQR_MISSING_PARAMS,
-      },
-      {
         label: "Topup",
         link: NAV_LINK.REPORT.TOPUP,
       },
