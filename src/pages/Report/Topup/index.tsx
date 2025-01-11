@@ -76,8 +76,11 @@ const ReportTopupPage = () => {
             placeholder="Ngày kết thúc"
             value={query.ed}
             locale="vi"
+            minDate={query.st}
             valueFormat="DD/MM/YYYY"
-            onChange={(value) => setQuery({ ...query, ed: value || undefined })}
+            onChange={(value) =>
+              setQuery({ ...query, ed: value || undefined, nu: 0 })
+            }
             clearable
           />
           <Button leftSection={<IconFileExcel size={"1.125rem"} />}>
@@ -116,13 +119,14 @@ const ReportTopupPage = () => {
         data={topup || []}
         isLoading={isFetchingTopup}
         onQueryChange={(value) => {
-          console.log(value);
-          setQuery({
-            ...query,
-            nu: value.curPage - 1,
-            sz: Number(value.pageSize),
-          });
+          if (query.nu !== value.curPage - 1 || query.sz !== value.pageSize)
+            setQuery({
+              ...query,
+              nu: value.curPage - 1,
+              sz: Number(value.pageSize),
+            });
         }}
+        isResetPage={query.ed ? true : false}
         totalElements={topupCounter}
       />
     </Stack>

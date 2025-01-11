@@ -219,14 +219,14 @@ const IqrRejectTodayPage = () => {
                 variant="subtle"
                 color="red"
                 size={"1rem"}
-                onClick={() => setQuery({ ...query, k: "" })}
+                onClick={() => setQuery({ ...query, k: "", nu: 0 })}
               >
                 <IconX />
               </ActionIcon>
             )
           }
-          onChange={(e) => setQuery({ ...query, k: e.target.value })}
-        />{" "}
+          onChange={(e) => setQuery({ ...query, k: e.target.value, nu: 0 })}
+        />
       </Group>
       <AppTable
         columns={[
@@ -353,12 +353,14 @@ const IqrRejectTodayPage = () => {
         isLoading={isFetchingIqr}
         onQueryChange={(value) => {
           console.log(value);
-          setQuery({
-            ...query,
-            nu: value.curPage - 1,
-            sz: Number(value.pageSize),
-          });
+          if (query.nu !== value.curPage - 1 || query.sz !== value.pageSize)
+            setQuery({
+              ...query,
+              nu: value.curPage - 1,
+              sz: value.pageSize,
+            });
         }}
+        isResetPage={query.k ? true : false}
         totalElements={iqrCounter}
       />
       <Modal

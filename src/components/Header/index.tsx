@@ -77,7 +77,7 @@ const Header = () => {
                   <Text>Việt Nam</Text>
                 </Group>
               </Menu.Item>
-              <Menu.Item onClick={() => {}}>
+              {/* <Menu.Item onClick={() => {}}>
                 <Group>
                   <Image
                     src="https://asiasociety.org/sites/default/files/styles/1200w/public/K/korean-flag.jpg"
@@ -96,7 +96,7 @@ const Header = () => {
                   />
                   <Text>English</Text>
                 </Group>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu.Dropdown>
           </Menu>
           <Tooltip label={"Thoát"}>
