@@ -91,3 +91,38 @@ export const listElements = [
     link: NAV_LINK.HISTORY_EXPORT_EXCEL,
   },
 ] as NavElement[];
+
+export const listRoleReportElements = [
+  {
+    label: "Bảng điều khiển",
+    link: NAV_LINK.DASHBOARD,
+    icon: IconDeviceDesktopAnalytics,
+  },
+  {
+    label: "Báo cáo",
+    icon: IconReport,
+    children: [
+      {
+        label: "Iqr",
+        link: NAV_LINK.REPORT.IQR,
+      },
+      {
+        label: "Iqr thiếu thông tin",
+        link: NAV_LINK.REPORT.IQR_MISSING_PARAMS,
+      },
+      {
+        label: "Topup",
+        link: NAV_LINK.REPORT.TOPUP,
+      },
+      {
+        label: "SMS Brandname",
+        link: NAV_LINK.REPORT.SMS_BRANDNAME,
+      },
+    ],
+  },
+  {
+    label: "Lịch sử xuất Excel",
+    icon: IconFileExcel,
+    link: NAV_LINK.HISTORY_EXPORT_EXCEL,
+  },
+] as NavElement[];

@@ -15,11 +15,21 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 
-import { listElements as navElements } from "../../constants/navElements";
+import {
+  listElements,
+  listRoleReportElements,
+} from "../../constants/navElements";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useMemo } from "react";
 const NavBar = () => {
+  const { roles } = useSelector((state: RootState) => state.app);
   const theme = useMantineTheme();
   const matches = useMediaQuery("(max-width: 768px)");
-
+  const mapElement = useMemo(
+    () => (roles === "ROLE_REPORT" ? listRoleReportElements : listElements),
+    [roles]
+  );
   const location = useLocation();
   return (
     <AppShell.Navbar w={matches ? "auto" : 260} py={"lg"} hidden={false}>
@@ -31,7 +41,7 @@ const NavBar = () => {
         px={"sm"}
       >
         {matches
-          ? navElements.map((navElement) => (
+          ? mapElement.map((navElement) => (
               <HoverCard
                 key={navElement.label}
                 disabled={!navElement.children}
@@ -94,7 +104,7 @@ const NavBar = () => {
                 </HoverCard.Dropdown>
               </HoverCard>
             ))
-          : navElements.map((navElement) => (
+          : mapElement.map((navElement) => (
               <NavLink
                 key={navElement.label}
                 style={{ borderRadius: theme.radius.sm }}
