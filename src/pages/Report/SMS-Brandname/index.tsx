@@ -93,8 +93,13 @@ const ReportSMSBrandnamePage = () => {
             title: "Mã Iqr",
           },
           {
-            accessor: "transactionId",
+            accessor: "transactionid",
             title: "Mã giao dịch",
+            textAlign: "center",
+          },
+          {
+            accessor: "phone",
+            title: "Số điện thoại",
             textAlign: "center",
           },
           {

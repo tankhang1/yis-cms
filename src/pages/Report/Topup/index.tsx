@@ -93,7 +93,7 @@ const ReportTopupPage = () => {
           },
 
           {
-            accessor: "customerName",
+            accessor: "customer_name",
             title: "Tên khách hàng",
           },
           {
@@ -105,7 +105,7 @@ const ReportTopupPage = () => {
             title: "Giá",
           },
           {
-            accessor: "transactionId",
+            accessor: "response_id",
             title: "Mã giao dịch",
           },
           {
