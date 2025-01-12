@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../../constants/navLinks";
 import { TIqrRangeDateTimeREQ } from "../../../redux/api/iqr/iqr.request";
 import {
+  useExportIqrDataMutation,
   useGetProvincesQuery,
   useIqrCounterQuery,
   useIqrRangeDateQuery,
@@ -17,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { resetAppInfo } from "../../../redux/slices/appSlices";
 import { IMAGE_PLACEHOLDER } from "../../../constants";
+import NotificationHelper from "../../../helpers/notification.helper";
 const MapLabel = new Map([
   ["xemay", "Xe máy Air Blade 125cc"],
   ["topup", "Nạp tiền 10.000VND"],
@@ -58,10 +60,38 @@ const ReportIqrPage = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-
+  const [exportExcel, { isLoading: isLoadingExcel }] =
+    useExportIqrDataMutation();
   //   const [rejectIqr, { isLoading: isLoadingReject }] = useRejectIqrMutation();
   //   const [confirmIqr, { isLoading: isLoadingConfirm }] = useConfirmIqrMutation();
   //   const [updateIqr, { isLoading: isLoadingUpdate }] = useUpdateIqrMutation();
+  const onExportExcel = async () => {
+    await exportExcel({
+      ...query,
+      st: +(dayjs(query.st).format("YYYYMMDD") + "0000"),
+      ed: +(dayjs(query.ed).format("YYYYMMDD") + "2359"),
+    })
+      .unwrap()
+      .then((value: { status: number }) => {
+        if (value.status === 1) {
+          NotificationHelper.showSuccess(
+            "Thông báo",
+            "Xuất dữ liệu thành công, vui lòng đợi trong giây lát"
+          );
+        } else {
+          NotificationHelper.showError(
+            "Thông báo",
+            "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+          );
+        }
+      })
+      .catch(() => {
+        NotificationHelper.showError(
+          "Thông báo",
+          "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+        );
+      });
+  };
   const { data: provinces } = useGetProvincesQuery();
   const mapProvince = useCallback(
     (code: string) => {
@@ -103,7 +133,11 @@ const ReportIqrPage = () => {
             }
             clearable
           />
-          <Button leftSection={<IconFileExcel size={"1.125rem"} />}>
+          <Button
+            loading={isLoadingExcel}
+            leftSection={<IconFileExcel size={"1.125rem"} />}
+            onClick={onExportExcel}
+          >
             Xuất File
           </Button>
         </Group>

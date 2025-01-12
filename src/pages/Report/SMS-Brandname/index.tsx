@@ -14,10 +14,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { resetAppInfo } from "../../../redux/slices/appSlices";
+import { useExportBrandnameExcelMutation } from "../../../redux/api/excel/excel.api";
+import NotificationHelper from "../../../helpers/notification.helper";
 
 const ReportSMSBrandnamePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { token } = useSelector((state: RootState) => state.app);
 
   const [query, setQuery] = useState<Partial<TIqrRangeDateTimeREQ>>({
@@ -51,6 +54,36 @@ const ReportSMSBrandnamePage = () => {
     }
   );
 
+  const [exportSMSBrandname, { isLoading: isLoadingSMSBrandname }] =
+    useExportBrandnameExcelMutation();
+
+  const onExportExcel = async () => {
+    await exportSMSBrandname({
+      st: +(dayjs(query.st).format("YYYYMMDD") + "0000"),
+      ed: +(dayjs(query.ed).format("YYYYMMDD") + "2359"),
+      k: "",
+    })
+      .unwrap()
+      .then((value: { status: number }) => {
+        if (value.status === 1) {
+          NotificationHelper.showSuccess(
+            "Thông báo",
+            "Xuất dữ liệu thành công, vui lòng đợi trong giây lát"
+          );
+        } else {
+          NotificationHelper.showError(
+            "Thông báo",
+            "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+          );
+        }
+      })
+      .catch(() => {
+        NotificationHelper.showError(
+          "Thông báo",
+          "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+        );
+      });
+  };
   useEffect(() => {
     if (!token) {
       navigate(NAV_LINK.LOGIN);
@@ -86,7 +119,11 @@ const ReportSMSBrandnamePage = () => {
             }
             clearable
           />
-          <Button leftSection={<IconFileExcel size={"1.125rem"} />}>
+          <Button
+            leftSection={<IconFileExcel size={"1.125rem"} />}
+            onClick={onExportExcel}
+            loading={isLoadingSMSBrandname}
+          >
             Xuất File
           </Button>
         </Group>

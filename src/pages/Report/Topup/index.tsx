@@ -14,6 +14,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { resetAppInfo } from "../../../redux/slices/appSlices";
+import { useExportTopupExcelMutation } from "../../../redux/api/excel/excel.api";
+import NotificationHelper from "../../../helpers/notification.helper";
 
 const ReportTopupPage = () => {
   const navigate = useNavigate();
@@ -49,7 +51,35 @@ const ReportTopupPage = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-
+  const [exportTopupExcel, { isLoading: isLoadingTopupExcel }] =
+    useExportTopupExcelMutation();
+  const onExportExcel = async () => {
+    await exportTopupExcel({
+      st: +(dayjs(query.st).format("YYYYMMDD") + "0000"),
+      ed: +(dayjs(query.ed).format("YYYYMMDD") + "2359"),
+      k: "",
+    })
+      .unwrap()
+      .then((value: { status: number }) => {
+        if (value.status === 1) {
+          NotificationHelper.showSuccess(
+            "Thông báo",
+            "Xuất dữ liệu thành công, vui lòng đợi trong giây lát"
+          );
+        } else {
+          NotificationHelper.showError(
+            "Thông báo",
+            "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+          );
+        }
+      })
+      .catch(() => {
+        NotificationHelper.showError(
+          "Thông báo",
+          "Xuất dữ liệu thất bại, vui lòng kiểm tra"
+        );
+      });
+  };
   useEffect(() => {
     if (!token) {
       navigate(NAV_LINK.LOGIN);
@@ -83,7 +113,11 @@ const ReportTopupPage = () => {
             }
             clearable
           />
-          <Button leftSection={<IconFileExcel size={"1.125rem"} />}>
+          <Button
+            leftSection={<IconFileExcel size={"1.125rem"} />}
+            loading={isLoadingTopupExcel}
+            onClick={onExportExcel}
+          >
             Xuất File
           </Button>
         </Group>
