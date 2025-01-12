@@ -4,7 +4,20 @@ import * as path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: "no-cache-images", // Custom plugin name
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url?.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
+            res.setHeader("Cache-Control", "no-store");
+          }
+          next();
+        });
+      },
+    },
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src/"),
