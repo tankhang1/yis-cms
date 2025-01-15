@@ -168,7 +168,11 @@ const ReportIqrMissingParamsPage = () => {
             title: "Mã iQr",
             textAlign: "center",
           },
-
+          {
+            accessor: "batch_number",
+            title: "Mã túi",
+            textAlign: "center",
+          },
           {
             accessor: "",
             title: "Duyệt",

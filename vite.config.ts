@@ -4,26 +4,18 @@ import * as path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    {
-      name: "no-cache-images", // Custom plugin name
-      configureServer(server) {
-        server.middlewares.use((req, res, next) => {
-          if (req.url?.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
-            res.setHeader("Cache-Control", "no-store");
-          }
-          next();
-        });
-      },
-    },
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src/"),
       "@assets": path.resolve(__dirname, "./src/assets/"),
       "@constants": path.resolve(__dirname, "./src/constants/"),
       "@pages": path.resolve(__dirname, "./src/pages/"),
+    },
+  },
+  preview: {
+    headers: {
+      "Cache-Control": "no-store", // Disable caching for all served assets
     },
   },
 });

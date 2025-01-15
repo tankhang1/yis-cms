@@ -244,6 +244,11 @@ const IqrRejectPage = () => {
             textAlign: "center",
           },
           {
+            accessor: "batch_number",
+            title: "Mã túi",
+            textAlign: "center",
+          },
+          {
             accessor: "status",
             title: "Trạng thái",
             textAlign: "center",
