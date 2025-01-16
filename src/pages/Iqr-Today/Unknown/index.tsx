@@ -53,7 +53,7 @@ const IqrUnknownTodayPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.app);
-  const { register, reset, getValues, watch } = useForm<TIqrUpdateREQ>();
+  const { register, getValues, setValue, watch } = useForm<TIqrUpdateREQ>();
 
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
@@ -95,12 +95,12 @@ const IqrUnknownTodayPage = () => {
           NotificationHelper.showSuccess("Thông báo", "Từ chối thành công");
         else NotificationHelper.showError("Thông báo", "Từ chối thất bại");
         setIqrDetail(undefined);
-        reset();
+        setValue("note", "");
       })
       .catch(() => {
         NotificationHelper.showError("Thông báo", "Từ chối thất bại");
         setIqrDetail(undefined);
-        reset();
+        setValue("note", "");
       });
   };
   const onConfirm = async (code: string) => {
@@ -113,12 +113,12 @@ const IqrUnknownTodayPage = () => {
           NotificationHelper.showSuccess("Thông báo", "Duyệt thành công");
         } else NotificationHelper.showError("Thông báo", "Duyệt thất bại");
         setIqrDetail(undefined);
-        reset();
+        setValue("note", "");
       })
       .catch(() => {
         NotificationHelper.showError("Thông báo", "Duyệt thất bại");
         setIqrDetail(undefined);
-        reset();
+        setValue("note", "");
       });
   };
   useEffect(() => {
@@ -315,7 +315,7 @@ const IqrUnknownTodayPage = () => {
           <Stack flex={1}>
             <Stack gap={0}>
               <Text c={"gray"} fz={"h6"}>
-                {iqrDetail?.time_active || ""}
+                {iqrDetail?.time_turn || ""}
               </Text>
               <Text c={"black"} fw={"bold"} fz={"h4"}>
                 {iqrDetail?.product_name || ""}

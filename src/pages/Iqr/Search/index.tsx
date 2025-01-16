@@ -130,12 +130,14 @@ const IqrSearchPage = () => {
         if (value.status === 0)
           NotificationHelper.showSuccess("Thông báo", "Từ chối thành công");
         else NotificationHelper.showError("Thông báo", "Từ chối thất bại");
-        reset();
+        setValue("note", "");
+
         setIqrDetail(undefined);
       })
       .catch(() => {
         NotificationHelper.showError("Thông báo", "Từ chối thất bại");
-        reset();
+        setValue("note", "");
+
         setIqrDetail(undefined);
       });
   };
@@ -149,11 +151,11 @@ const IqrSearchPage = () => {
           NotificationHelper.showSuccess("Thông báo", "Duyệt thành công");
         } else NotificationHelper.showError("Thông báo", "Duyệt thất bại");
         setIqrDetail(undefined);
-        reset();
+        setValue("note", "");
       })
       .catch(() => {
         NotificationHelper.showError("Thông báo", "Duyệt thất bại");
-        reset();
+        setValue("note", "");
         setIqrDetail(undefined);
       });
   };
@@ -494,7 +496,7 @@ const IqrSearchPage = () => {
           <Stack flex={1}>
             <Stack gap={0}>
               <Text c={"gray"} fz={"h6"}>
-                {iqrDetail?.time_active || ""}
+                {iqrDetail?.time_turn || ""}
               </Text>
               <Text c={"black"} fw={"bold"} fz={"h4"}>
                 {iqrDetail?.product_name || ""}

@@ -491,7 +491,7 @@ const IqrRejectTodayPage = () => {
           <Stack flex={1}>
             <Stack gap={0}>
               <Text c={"gray"} fz={"h6"}>
-                {iqrDetail?.time_active || ""}
+                {iqrDetail?.time_turn || ""}
               </Text>
               <Text c={"black"} fw={"bold"} fz={"h4"}>
                 {iqrDetail?.product_name || ""}
