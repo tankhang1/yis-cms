@@ -387,7 +387,11 @@ const IqrSearchPage = () => {
         <Group gap={10} align="flex-start">
           <Stack pos={"relative"}>
             <Image
-              src={watch().image_confirm || IMAGE_PLACEHOLDER}
+              src={
+                watch().image_confirm
+                  ? `${watch().image_confirm}?timestamp=${new Date().getTime()}`
+                  : IMAGE_PLACEHOLDER
+              }
               w={300}
               mah={400}
               fit="cover"
@@ -475,7 +479,13 @@ const IqrSearchPage = () => {
         <Group gap={10} align="flex-start">
           <Stack pos={"relative"}>
             <Image
-              src={iqrDetail?.image_confirm || IMAGE_PLACEHOLDER}
+              src={
+                iqrDetail?.image_confirm
+                  ? `${
+                      iqrDetail?.image_confirm
+                    }?timestamp=${new Date().getTime()}`
+                  : IMAGE_PLACEHOLDER
+              }
               w={300}
               mah={400}
               fit="cover"
@@ -555,7 +565,12 @@ const IqrSearchPage = () => {
         size={"100%"}
       >
         <Stack justify="center" align="center" flex={1}>
-          <Image src={previewImage} maw={"50%"} mah={"85dvh"} fit="cover" />
+          <Image
+            src={`${previewImage}?timestamp=${new Date().getTime()}`}
+            maw={"50%"}
+            mah={"85dvh"}
+            fit="cover"
+          />
         </Stack>
       </Drawer>
     </Stack>
