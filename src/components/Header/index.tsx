@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import NAV_LINK from "../../constants/navLinks";
 import { useDispatch } from "react-redux";
 import { resetAppInfo } from "../../redux/slices/appSlices";
+import { useMediaQuery } from "@mantine/hooks";
 const MapLanguageIcon = new Map([
   [
     "vi",
@@ -29,6 +30,7 @@ const MapLanguageIcon = new Map([
   ],
 ]);
 const Header = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const onLogout = async () => {
@@ -43,7 +45,7 @@ const Header = () => {
         backgroundColor: "rgba(255,255,255,0.9)",
         borderRadius: "6px",
       }}
-      ml={280}
+      ml={isMobile ? 80 : 280}
       mr={20}
       mt={10}
     >

@@ -16,6 +16,7 @@ import {
   useIqrCounterTodayQuery,
   useIqrTodayQuery,
 } from "../../redux/api/iqr/iqr.api";
+import { useMediaQuery } from "@mantine/hooks";
 type MappedData = {
   [key: string]: TDashboardRES[];
 };
@@ -27,6 +28,7 @@ const MapLabel = new Map([
   ["", "Không trúng thưởng"],
 ]);
 const DashboardPage = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { data: statistic } = useGetDashboardStatisticQuery({});
   const [query, setQuery] = useState<Partial<TIqrRangeTimeREQ>>({
     nu: 0,
@@ -75,45 +77,84 @@ const DashboardPage = () => {
       <Text fz={"h3"} fw={"bold"} c={"rgb(64, 174, 163)"}>
         THỐNG KÊ
       </Text>
-      <Grid>
-        <Grid.Col span={4}>
-          <Statistic1 data={mapValue} />
-        </Grid.Col>
-        <Grid.Col span={8}>
-          <Statistic2 data={mapValue} />
-        </Grid.Col>
-      </Grid>
+      {isMobile ? (
+        <Stack>
+          <Statistic1 data={mapValue} /> <Statistic2 data={mapValue} />
+        </Stack>
+      ) : (
+        <Grid>
+          <Grid.Col span={4}>
+            <Statistic1 data={mapValue} />
+          </Grid.Col>
+          <Grid.Col span={8}>
+            <Statistic2 data={mapValue} />
+          </Grid.Col>
+        </Grid>
+      )}
+
       <Text fz={"h3"} fw={"bold"} c={"rgb(64, 174, 163)"}>
         SỐ GIẢI ĐÃ TRÚNG THƯỞNG
       </Text>
-      <Group justify="space-between" wrap="wrap">
-        <AwardItem
-          image={Driver}
-          title="Giải nhất"
-          value={mapValue["xemay"]?.[0]?.total}
-          note={10}
-        />
-        <AwardItem
-          image={Fridge}
-          title="Giải nhì"
-          value={mapValue["tulanh"]?.[0]?.total}
-          imageStyle="tw-h-44"
-          note={15}
-        />
-        <AwardItem
-          image={Speaker}
-          title="Giải ba"
-          value={mapValue["loaJBL"]?.[0]?.total}
-          imageStyle="tw-h-36"
-          note={30}
-        />
-        <AwardItem
-          image={Topup}
-          title="Giải khuyến khích"
-          value={mapValue["Topup"]?.[0]?.total}
-          note={453023}
-        />
-      </Group>
+      {isMobile ? (
+        <Stack>
+          <AwardItem
+            image={Driver}
+            title="Giải nhất"
+            value={mapValue["xemay"]?.[0]?.total}
+            note={10}
+          />
+          <AwardItem
+            image={Fridge}
+            title="Giải nhì"
+            value={mapValue["tulanh"]?.[0]?.total}
+            imageStyle="tw-h-44"
+            note={15}
+          />
+          <AwardItem
+            image={Speaker}
+            title="Giải ba"
+            value={mapValue["loaJBL"]?.[0]?.total}
+            imageStyle="tw-h-36"
+            note={30}
+          />
+          <AwardItem
+            image={Topup}
+            title="Giải khuyến khích"
+            value={mapValue["Topup"]?.[0]?.total}
+            note={453023}
+          />
+        </Stack>
+      ) : (
+        <Group justify="space-between" wrap="wrap">
+          <AwardItem
+            image={Driver}
+            title="Giải nhất"
+            value={mapValue["xemay"]?.[0]?.total}
+            note={10}
+          />
+          <AwardItem
+            image={Fridge}
+            title="Giải nhì"
+            value={mapValue["tulanh"]?.[0]?.total}
+            imageStyle="tw-h-44"
+            note={15}
+          />
+          <AwardItem
+            image={Speaker}
+            title="Giải ba"
+            value={mapValue["loaJBL"]?.[0]?.total}
+            imageStyle="tw-h-36"
+            note={30}
+          />
+          <AwardItem
+            image={Topup}
+            title="Giải khuyến khích"
+            value={mapValue["Topup"]?.[0]?.total}
+            note={453023}
+          />
+        </Group>
+      )}
+
       <Text fz={"h3"} c={"rgb(64, 174, 163)"} fw={"bolder"}>
         IQR TRONG NGÀY
       </Text>

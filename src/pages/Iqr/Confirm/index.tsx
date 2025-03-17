@@ -37,7 +37,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { resetAppInfo } from "../../../redux/slices/appSlices";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useUpdateIqrMutation } from "../../../redux/api/auth/auth.api";
 import { useForm } from "react-hook-form";
 import NotificationHelper from "../../../helpers/notification.helper";
@@ -52,6 +52,7 @@ const MapLabel = new Map([
   ["", "Không trúng thưởng"],
 ]);
 const IqrConfirmPage = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -423,7 +424,7 @@ const IqrConfirmPage = () => {
         <Stack justify="center" align="center" flex={1}>
           <Image
             src={`${previewImage}?timestamp=${new Date().getTime()}`}
-            maw={"50%"}
+            maw={isMobile ? "100%" : "50%"}
             mah={"85dvh"}
             fit="cover"
           />

@@ -20,8 +20,10 @@ import { TAuthREQ } from "../../redux/api/auth/auth.request";
 import { updateAppInfo } from "../../redux/slices/appSlices";
 import { useDispatch } from "react-redux";
 import NotificationHelper from "../../helpers/notification.helper";
+import { useMediaQuery } from "@mantine/hooks";
 
 const LoginPage = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, { isLoading: isLoadingLogin }] = useLoginMutation();
@@ -49,28 +51,32 @@ const LoginPage = () => {
   return (
     <Center w={"100vw"} h={"100vh"} bg={"#F8F7FA"}>
       <Box pos={"relative"}>
-        <Image
-          src={TopShape}
-          pos={"absolute"}
-          style={{ zIndex: 1 }}
-          w={237}
-          h={237}
-          top={-100}
-          left={-100}
-        />
-        <Image
-          src={BottomShape}
-          pos={"absolute"}
-          style={{ zIndex: 1 }}
-          w={237}
-          h={237}
-          right={-100}
-          bottom={-100}
-        />
+        {!isMobile && (
+          <Image
+            src={TopShape}
+            pos={"absolute"}
+            style={{ zIndex: 1 }}
+            w={237}
+            h={237}
+            top={-100}
+            left={-100}
+          />
+        )}
+        {!isMobile && (
+          <Image
+            src={BottomShape}
+            pos={"absolute"}
+            style={{ zIndex: 1 }}
+            w={237}
+            h={237}
+            right={-100}
+            bottom={-100}
+          />
+        )}
         <Paper
           radius={6}
           bg={"white"}
-          maw={460}
+          maw={isMobile ? 400 : 460}
           p={48}
           shadow="sm"
           style={{ zIndex: 999, position: "relative" }}

@@ -42,6 +42,7 @@ import {
 } from "../../../redux/api/auth/auth.api";
 import NotificationHelper from "../../../helpers/notification.helper";
 import { IMAGE_PLACEHOLDER } from "../../../constants";
+import { useMediaQuery } from "@mantine/hooks";
 const MapLabel = new Map([
   ["xemay", "Xe máy Air Blade 125cc"],
   ["topup", "Nạp tiền 10.000VND"],
@@ -50,6 +51,7 @@ const MapLabel = new Map([
   ["", "Không trúng thưởng"],
 ]);
 const IqrUnknownPage = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.app);
@@ -379,7 +381,7 @@ const IqrUnknownPage = () => {
         <Stack justify="center" align="center" flex={1}>
           <Image
             src={`${previewImage}?timestamp=${new Date().getTime()}`}
-            maw={"50%"}
+            maw={isMobile ? "100%" : "50%"}
             mah={"85dvh"}
             fit="cover"
           />
