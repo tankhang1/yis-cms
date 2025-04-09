@@ -385,7 +385,6 @@ const IqrUnknownTodayPage = () => {
           <Image
             src={`${previewImage}?timestamp=${new Date().getTime()}`}
             maw={isMobile ? "100%" : "50%"}
-            mah={"85dvh"}
             fit="cover"
           />
         </Stack>
